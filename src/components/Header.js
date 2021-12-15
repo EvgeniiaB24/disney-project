@@ -43,7 +43,7 @@ export default Header;
  background:#090b13;
  display:flex;
  aling-items:center;
- padding:0 36px;
+ padding:0 76px;
  `
  const Logo = styled.img`
    width:80px;
@@ -98,4 +98,8 @@ export default Header;
  height:48px;
  border-radius:50%;
  cursor:pointer;
+ display:flex;
+ position:absolute;
+ right: 355px;
+
 `
