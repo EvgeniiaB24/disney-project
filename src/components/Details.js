@@ -1,40 +1,64 @@
-import React from "react";
+import React,{useState, useEffect} from "react";
 import styled from "styled-components";
+import {useParams} from "react-router-dom"
+import db from "../Firebase"
+import {collection, getDocs} from "firebase/firestore"
 
-function Detail() {
-  return (
-    <Container>
-      <Background>
-        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/4F39B7E16726ECF419DD7C49E011DD95099AA20A962B0B10AA1881A70661CE45/scale?width=1440&aspectRatio=1.78&format=jpeg" />
-      </Background>
-      <ImageTitle>
-        <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/D7AEE1F05D10FC37C873176AAA26F777FC1B71E7A6563F36C6B1B497CAB1CEC2/scale?width=1440&aspectRatio=1.78" />
-      </ImageTitle>
-      <Controls>
-        <PlayButton>
-          <img src="/images/play-icon-black.png" />
-          <span>PLAY</span>
-        </PlayButton>
-        <TrailerButton>
-          <img src="/images/play-icon-white.png" />
-          <span>TRAILER</span>
-        </TrailerButton>
-        <AddButton>
-          <span>+</span>
-        </AddButton>
-        <GroupWatchButton>
-          <img src="/images/group-icon.png" />
-        </GroupWatchButton>
-      </Controls>
-      <SubTitle>2018 * 7m * Family, Fantasy, Kids, Animation</SubTitle>
-      <Description>
-        A Chinese-Canadian woman suffering from empty nest syndrome gets a
-        second shot at motherhood when one of her handmade dumplings comes
-        alive.
-      </Description>
-    </Container>
-  );
+  function Detail() {
+    const {id} = useParams();
+    const [movie, setMovie] = useState()
+
+    useEffect(() => {
+        const movCollection = collection(db, "movies");
+        console.log(movCollection, "this is movie collection")
+        getDocs(movCollection)
+        .then((movSnapshot) => {
+            movSnapshot.docs.forEach((doc) => {
+                if(id == doc.id) {
+                    setMovie(doc.data())
+                }
+            })
+        })
+    }, [])
+
+    return (
+        <Container>
+            {movie && (
+                <>
+                    <Background>
+                        <img src={movie.backgroundImg}/>
+                    </Background>
+                    <ImageTitle>
+                        <img src={movie.imageTitle}/>
+                    </ImageTitle>
+                    <Controls>
+                        <PlayButton>
+                            <img src="/images/play-icon-black.png"/>
+                            <span>PLAY</span>
+                        </PlayButton>
+                        <TrailerButton>
+                            <img src="/images/play-icon-white.png"/>
+                            <span>TRAILER</span>
+                        </TrailerButton>
+                        <AddButton>
+                            <span>+</span>
+                        </AddButton>
+                        <GroupWatchButton>
+                            <img src="/images/group-icon.png"/>
+                        </GroupWatchButton>
+                    </Controls>
+                    <SubTitle>
+                        {movie.subTitle}
+                    </SubTitle>
+                    <Description>
+                        {movie.description}
+                    </Description>
+                </>
+           )}  
+        </Container>
+    )
 }
+
 
 export default Detail;
 
